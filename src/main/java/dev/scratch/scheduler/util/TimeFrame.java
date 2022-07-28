@@ -3,9 +3,9 @@ package dev.scratch.scheduler.util;
 import java.time.LocalTime;
 import java.util.Objects;
 
-public class TimeFrame implements Comparable<TimeFrame> {
-    private LocalTime start;
-    private LocalTime end;
+public final class TimeFrame implements Comparable<TimeFrame> {
+    private final LocalTime start;
+    private final LocalTime end;
 
     public TimeFrame(LocalTime start, LocalTime end) {
         this.start = start;
@@ -16,18 +16,25 @@ public class TimeFrame implements Comparable<TimeFrame> {
         return start;
     }
 
-    public TimeFrame setStart(LocalTime start) {
-        this.start = start;
-        return this;
-    }
 
     public LocalTime getEnd() {
         return end;
     }
 
-    public TimeFrame setEnd(LocalTime end) {
-        this.end = end;
-        return this;
+    public boolean violates(TimeFrame timeFrame) {
+        return start.compareTo(timeFrame.getEnd()) <= 0 && end.compareTo(timeFrame.getStart()) >= 0;
+    }
+
+    public boolean violates2(TimeFrame timeFrame) {
+        return start.compareTo(timeFrame.getEnd()) < 0 && end.compareTo(timeFrame.getStart()) > 0;
+    }
+
+    public TimeFrame add(int minutes) {
+        return new TimeFrame(start.plusMinutes(minutes), end.plusMinutes(minutes));
+    }
+
+    public TimeFrame subtract(int minutes) {
+        return new TimeFrame(start.minusMinutes(minutes), end.minusMinutes(minutes));
     }
 
     @Override
@@ -45,6 +52,14 @@ public class TimeFrame implements Comparable<TimeFrame> {
 
     @Override
     public int compareTo(TimeFrame o) {
-        return this.start.compareTo(o.start);
+        if (this.start.compareTo(o.start) != 0) {
+            return this.start.compareTo(o.start);
+        }
+        return this.end.compareTo(o.end);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s - %s", start, end);
     }
 }
