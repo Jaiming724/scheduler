@@ -5,12 +5,10 @@ import dev.scratch.scheduler.model.Schedule;
 import dev.scratch.scheduler.model.actions.Action;
 import dev.scratch.scheduler.model.actions.HardAction;
 import dev.scratch.scheduler.model.actions.SoftAction;
+import dev.scratch.scheduler.util.TimeFrame;
 
 import java.time.DayOfWeek;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 
 public class ScheduleService {
     private final Queue<SoftAction> softActionQueue;
@@ -40,7 +38,8 @@ public class ScheduleService {
         constraints.add(constraint);
     }
 
-    public void schedule() {
+    public Map<DayOfWeek, List<SoftAction>> schedule() {
+        Map<DayOfWeek, List<SoftAction>> unavailableActions = new HashMap<>();
         while (!hardActionQueue.isEmpty()) {
             HardAction action = hardActionQueue.remove();
             for (DayOfWeek day : action.getDays()) {
@@ -53,6 +52,24 @@ public class ScheduleService {
                 schedules.get(day).addConstraint(constraint);
             }
         }
+        while (!softActionQueue.isEmpty()) {
+            SoftAction softAction = softActionQueue.remove();
+            for (DayOfWeek day : softAction.getDays()) {
+                Schedule currentSchedule = schedules.get(day);
+                List<TimeFrame> availableTimeFrames = currentSchedule.getAvailableTimeFrames((int) softAction.getDuration().toMinutes(), 15);
+                if (availableTimeFrames.size() == 0) {
+                    unavailableActions.computeIfAbsent(day, k -> new ArrayList<>());
+                    unavailableActions.get(day).add(softAction);
+                    System.out.println("No available time on " + day + " for " + softAction.getContent());
+                    break;
+                }
+                int index = (int) (Math.random() * availableTimeFrames.size());
+                TimeFrame timeFrame = availableTimeFrames.get(index);
+                HardAction hardAction = new HardAction(softAction.getContent(), timeFrame, softAction.getDays());
+                currentSchedule.getSchedule().put(timeFrame, hardAction);
+            }
+        }
+        return unavailableActions;
     }
 
     public Schedule getSchedule(DayOfWeek day) {
