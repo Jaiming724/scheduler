@@ -21,11 +21,23 @@ public final class TimeFrame implements Comparable<TimeFrame> {
         return end;
     }
 
-    public boolean violates(TimeFrame timeFrame) {
+    /**
+     * Check if two timeframe overlap. Ex: 8:30-9 would overlap with 9-10
+     *
+     * @param timeFrame Timeframe to be compared against
+     * @return true if overlaps
+     */
+    public boolean overlaps(TimeFrame timeFrame) {
         return start.compareTo(timeFrame.getEnd()) <= 0 && end.compareTo(timeFrame.getStart()) >= 0;
     }
 
-    public boolean violates2(TimeFrame timeFrame) {
+    /**
+     * Similar to overlap, however, can start and end at the same time. Ex: 8:30-9 would not violate 9-10
+     *
+     * @param timeFrame Timeframe to be compared against
+     * @return true if timeFrame does not occur inside of current TimeFrame
+     */
+    public boolean violates(TimeFrame timeFrame) {
         return start.compareTo(timeFrame.getEnd()) < 0 && end.compareTo(timeFrame.getStart()) > 0;
     }
 

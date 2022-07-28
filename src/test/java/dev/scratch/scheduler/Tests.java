@@ -20,7 +20,7 @@ public class Tests {
         TimeFrame timeFrame2 = new TimeFrame(localTime3, localTime4);
         TimeFrame timeFrame3 = new TimeFrame(LocalTime.MIDNIGHT, LocalTime.of(9, 0, 0));
         TimeFrame timeFrame4 = new TimeFrame(LocalTime.of(14, 0, 0), LocalTime.of(23, 59, 59));
-        System.out.println(timeFrame1.violates2(timeFrame2));
+        System.out.println(timeFrame1.violates(timeFrame2));
         System.out.println(LocalTime.MIDNIGHT.compareTo(LocalTime.MIDNIGHT.minusMinutes(5)));
 
         ScheduleService scheduleService = new ScheduleService();

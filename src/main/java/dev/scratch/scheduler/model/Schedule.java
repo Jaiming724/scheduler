@@ -37,13 +37,13 @@ public class Schedule {
         while (timeFrame.getStart().compareTo(LocalTime.MIDNIGHT.minusMinutes(duration)) < 0) {
             boolean isFree = true;
             for (Map.Entry<TimeFrame, Action> entry : schedule.entrySet()) {
-                if (timeFrame.violates(entry.getKey()) || timeFrame.violates2(entry.getKey().add(timeBetweenActions)) || timeFrame.violates2(entry.getKey().subtract(timeBetweenActions))) {
+                if (timeFrame.overlaps(entry.getKey()) || timeFrame.violates(entry.getKey().add(timeBetweenActions)) || timeFrame.violates(entry.getKey().subtract(timeBetweenActions))) {
                     isFree = false;
                     break;
                 }
             }
             for (Constraint constraint : constraints) {
-                if (timeFrame.violates2(constraint.getTimeFrame())) {
+                if (timeFrame.violates(constraint.getTimeFrame())) {
                     isFree = false;
                     break;
                 }
