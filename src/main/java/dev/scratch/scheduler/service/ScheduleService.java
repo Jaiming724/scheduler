@@ -1,11 +1,12 @@
 package dev.scratch.scheduler.service;
 
+import dev.scratch.scheduler.generators.EarliestGenerator;
+import dev.scratch.scheduler.generators.Generator;
 import dev.scratch.scheduler.model.Constraint;
 import dev.scratch.scheduler.model.Schedule;
 import dev.scratch.scheduler.model.actions.Action;
 import dev.scratch.scheduler.model.actions.HardAction;
 import dev.scratch.scheduler.model.actions.SoftAction;
-import dev.scratch.scheduler.util.TimeFrame;
 
 import java.time.DayOfWeek;
 import java.util.*;
@@ -15,12 +16,14 @@ public class ScheduleService {
     private final Queue<HardAction> hardActionQueue;
     private final Queue<Constraint> constraints;
     private final Map<DayOfWeek, Schedule> schedules;
+    private Generator generator;
 
     public ScheduleService() {
         softActionQueue = new LinkedList<>();
         hardActionQueue = new LinkedList<>();
         constraints = new LinkedList<>();
         schedules = new HashMap<>();
+        generator = new EarliestGenerator(this);
         for (DayOfWeek day : DayOfWeek.values()) {
             schedules.put(day, new Schedule());
         }
@@ -39,7 +42,6 @@ public class ScheduleService {
     }
 
     public Map<DayOfWeek, List<SoftAction>> schedule() {
-        Map<DayOfWeek, List<SoftAction>> unavailableActions = new HashMap<>();
         while (!hardActionQueue.isEmpty()) {
             HardAction action = hardActionQueue.remove();
             for (DayOfWeek day : action.getDays()) {
@@ -52,27 +54,27 @@ public class ScheduleService {
                 schedules.get(day).addConstraint(constraint);
             }
         }
-        while (!softActionQueue.isEmpty()) {
-            SoftAction softAction = softActionQueue.remove();
-            for (DayOfWeek day : softAction.getDays()) {
-                Schedule currentSchedule = schedules.get(day);
-                List<TimeFrame> availableTimeFrames = currentSchedule.getAvailableTimeFrames((int) softAction.getDuration().toMinutes(), 15);
-                if (availableTimeFrames.size() == 0) {
-                    unavailableActions.computeIfAbsent(day, k -> new ArrayList<>());
-                    unavailableActions.get(day).add(softAction);
-                    System.out.println("No available time on " + day + " for " + softAction.getContent());
-                    break;
-                }
-                int index = (int) (Math.random() * availableTimeFrames.size());
-                TimeFrame timeFrame = availableTimeFrames.get(index);
-                HardAction hardAction = new HardAction(softAction.getContent(), timeFrame, softAction.getDays());
-                currentSchedule.getSchedule().put(timeFrame, hardAction);
-            }
-        }
-        return unavailableActions;
+
+        return generator.generate();
     }
 
     public Schedule getSchedule(DayOfWeek day) {
         return schedules.get(day);
+    }
+
+    public void setGenerator(Generator generator) {
+        this.generator = generator;
+    }
+
+    public Queue<SoftAction> getSoftActionQueue() {
+        return softActionQueue;
+    }
+
+    public Queue<HardAction> getHardActionQueue() {
+        return hardActionQueue;
+    }
+
+    public Queue<Constraint> getConstraints() {
+        return constraints;
     }
 }

@@ -31,7 +31,7 @@ public class Tests {
         scheduleService.addAction(hardAction2);
         scheduleService.addConstraint(constraint1);
         scheduleService.addConstraint(constraint2);
-        scheduleService.addAction(new SoftAction(Duration.ofMinutes(45), "Task 1", new DayOfWeek[]{DayOfWeek.MONDAY}));
+        scheduleService.addAction(new SoftAction(Duration.ofMinutes(30), "Task 1", new DayOfWeek[]{DayOfWeek.MONDAY}));
         scheduleService.schedule();
         scheduleService.getSchedule(DayOfWeek.MONDAY).printSchedule();
 
