@@ -10,6 +10,7 @@ import java.time.DayOfWeek;
 import java.util.*;
 
 public class EarliestGenerator extends Generator {
+    private int increments = 15;
 
     public EarliestGenerator(ScheduleService scheduleService) {
         super(scheduleService);
@@ -23,7 +24,7 @@ public class EarliestGenerator extends Generator {
             SoftAction softAction = softActionQueue.remove();
             for (DayOfWeek day : softAction.getDays()) {
                 Schedule currentSchedule = getScheduleService().getSchedule(day);
-                List<TimeFrame> availableTimeFrames = currentSchedule.getAvailableTimeFrames((int) softAction.getDuration().toMinutes(), 15);
+                List<TimeFrame> availableTimeFrames = currentSchedule.getAvailableTimeFrames((int) softAction.getDuration().toMinutes(), increments);
                 if (availableTimeFrames.size() == 0) {
                     unavailableActions.computeIfAbsent(day, k -> new ArrayList<>());
                     unavailableActions.get(day).add(softAction);
@@ -35,5 +36,14 @@ public class EarliestGenerator extends Generator {
             }
         }
         return unavailableActions;
+    }
+
+    public int getIncrements() {
+        return increments;
+    }
+
+    public EarliestGenerator setIncrements(int increments) {
+        this.increments = increments;
+        return this;
     }
 }

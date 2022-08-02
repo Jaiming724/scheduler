@@ -11,6 +11,11 @@ public class SoftAction extends Action {
         this.duration = duration;
     }
 
+    public SoftAction(Duration duration, String content, DayOfWeek[] days, int intervalBefore, int intervalAfter) {
+        super(content, days, intervalBefore, intervalAfter);
+        this.duration = duration;
+    }
+
     public Duration getDuration() {
         return duration;
     }

@@ -12,6 +12,11 @@ public class HardAction extends Action {
         this.timeFrame = timeFrame;
     }
 
+    public HardAction(String content, TimeFrame timeFrame, DayOfWeek[] days, int intervalBefore, int intervalAfter) {
+        super(content, days, intervalBefore, intervalAfter);
+        this.timeFrame = timeFrame;
+    }
+
     public TimeFrame getTimeFrame() {
         return timeFrame;
     }

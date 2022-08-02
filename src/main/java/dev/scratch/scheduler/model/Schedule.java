@@ -9,18 +9,11 @@ import java.util.*;
 
 public class Schedule {
     private final Map<TimeFrame, Action> schedule;
-    private int timeBetweenActions;
-    private List<Constraint> constraints;
+    private final List<Constraint> constraints;
 
     public Schedule() {
         this.schedule = new TreeMap<>();
         constraints = new LinkedList<>();
-        timeBetweenActions = 30;
-    }
-
-    public Schedule(int timeBetweenActions) {
-        this.schedule = new TreeMap<>();
-        this.timeBetweenActions = timeBetweenActions;
     }
 
     public void addHardAction(HardAction action) {
@@ -37,7 +30,11 @@ public class Schedule {
         while (timeFrame.getStart().compareTo(LocalTime.MIDNIGHT.minusMinutes(duration)) < 0) {
             boolean isFree = true;
             for (Map.Entry<TimeFrame, Action> entry : schedule.entrySet()) {
-                if (timeFrame.overlaps(entry.getKey()) || timeFrame.violates(entry.getKey().add(timeBetweenActions)) || timeFrame.violates(entry.getKey().subtract(timeBetweenActions))) {
+                Action action = entry.getValue();
+                boolean notAvailableBefore = timeFrame.violates(entry.getKey().subtract(action.getIntervalBefore()));
+                boolean notAvailableAfter = timeFrame.violates(entry.getKey().add(action.getIntervalAfter()));
+
+                if (notAvailableBefore || notAvailableAfter) {
                     isFree = false;
                     break;
                 }
@@ -48,7 +45,6 @@ public class Schedule {
                     break;
                 }
             }
-
             if (isFree) {
                 availableTimeFrames.add(timeFrame);
             }
