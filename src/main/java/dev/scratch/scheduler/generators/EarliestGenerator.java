@@ -31,7 +31,7 @@ public class EarliestGenerator extends Generator {
                     continue;
                 }
                 TimeFrame timeFrame = availableTimeFrames.get(0);
-                HardAction hardAction = new HardAction(softAction.getContent(), timeFrame, softAction.getDays());
+                HardAction hardAction = new HardAction(softAction.getContent(), timeFrame, softAction.getDays(), softAction.getIntervalBefore(), softAction.getIntervalAfter());
                 currentSchedule.getSchedule().put(timeFrame, hardAction);
             }
         }
