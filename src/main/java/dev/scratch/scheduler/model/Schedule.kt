@@ -6,7 +6,7 @@ import dev.scratch.scheduler.util.TimeFrame
 import java.util.*
 
 class Schedule {
-    private val schedule = TreeMap<TimeFrame, Action>()
+    val schedule = TreeMap<TimeFrame, Action>()
 
     fun addHardAction(action: HardAction) {
         schedule[action.timeFrame] = action
@@ -14,13 +14,6 @@ class Schedule {
 
     fun addConstraint(aBreak: Break) {
         schedule[aBreak.timeFrame] = aBreak
-    }
-
-    fun printSchedule() {
-        println("printing")
-        schedule.forEach { (key, value) ->
-            println("$key : ${value.content}")
-        }
     }
 
 }
