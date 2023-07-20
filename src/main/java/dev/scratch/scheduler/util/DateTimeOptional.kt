@@ -26,4 +26,5 @@ sealed interface DateTimeOptional {
         }
 
     }
+
 }

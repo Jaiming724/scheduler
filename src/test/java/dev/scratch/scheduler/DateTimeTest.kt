@@ -15,19 +15,20 @@ object DateTimeTest {
 //         val formatter: DateTimeFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
 //        val testTime: OffsetDateTime = OffsetDateTime.parse(test, formatter)
 //        println(testTime)
-
-        printStringOptional(datetime)
-        printStringOptional(date)
+        println(datetime)
+        println(date)
+        //printStringOptional(datetime)
+        //printStringOptional(date)
     }
 
     fun printStringOptional(dt: DateTimeOptional) {
         when (dt) {
             is SimpleDateTime -> {
-                println("Hour: ${dt.dateTime.hour}")
+               // println("DateTime: ${dt.getDateTimeOptionalString()}")
             }
 
             is SimpleDate -> {
-                println("Day of month: ${dt.date.dayOfMonth}")
+              //  println("Date: ${dt.getDateTimeOptionalString()}")
             }
 
             else -> {
