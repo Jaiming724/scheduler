@@ -16,13 +16,7 @@ sealed interface DateTimeOptional {
         }
 
         fun hasTime(datetimeString: String): Boolean {
-            try {
-                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-                val dateTime = LocalDateTime.parse(datetimeString, formatter)
-                return true
-            } catch (e: DateTimeParseException) {
-                return false
-            }
+            return datetimeString.contains("T")
         }
 
     }
