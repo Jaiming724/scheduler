@@ -18,7 +18,7 @@ class Scheduler {
         for (day in DayOfWeek.values()) {
             schedules[day] = Schedule()
         }
-        println(schedules.map { "${it.key}: ${it.value}" }.joinToString(", "))
+        //println(schedules.map { "${it.key}: ${it.value}" }.joinToString(", "))
 
     }
 
@@ -53,7 +53,9 @@ class Scheduler {
         softActions.clear()
         hardAction.clear()
         breaks.clear()
-        schedules.clear()
+        for(schedule in schedules.values) {
+            schedule.schedule.clear()
+        }
     }
 
 }
