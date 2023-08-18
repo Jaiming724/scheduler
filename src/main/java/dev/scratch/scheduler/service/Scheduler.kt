@@ -49,4 +49,11 @@ class Scheduler {
         return schedules
     }
 
+    fun clear() {
+        softActions.clear()
+        hardAction.clear()
+        breaks.clear()
+        schedules.clear()
+    }
+
 }
